@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Liquid Glass Toolbox — 测试按钮</title>
+<style>
+  :root{
+    --bg1: #0f1724;
+    --bg2: #0b1220;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.12);
+    --accent: rgba(120,180,255,0.9);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:24px;
+    background: radial-gradient(1200px 600px at 10% 20%, rgba(60,110,200,0.12), transparent),
+                radial-gradient(800px 500px at 90% 80%, rgba(200,80,200,0.06), transparent),
+                linear-gradient(135deg,var(--bg1),var(--bg2));
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color:#eaf2ff;
+    -webkit-font-smoothing:antialiased;
+    padding:40px;
+  }
+
+  .wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+
+  .card{
+    width:420px;
+    padding:28px;
+    border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    border: 1px solid rgba(255,255,255,0.03);
+    backdrop-filter: blur(6px);
+  }
+
+  h1{font-size:18px;margin-bottom:12px}
+  p{font-size:13px;color:rgba(230,240,255,0.8);margin-bottom:18px}
+
+  /* 按钮主体 */
+  .liquid-btn{
+    --w: 300px;
+    --h: 64px;
+    width:var(--w);
+    height:var(--h);
+    position:relative;
+    border-radius:calc(var(--h) / 2);
+    overflow:hidden;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    user-select:none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 6px 18px rgba(5,10,30,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    backdrop-filter: blur(10px) saturate(120%);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .liquid-btn:hover{ transform: translateY(-4px); box-shadow: 0 14px 36px rgba(5,10,30,0.7); }
+
+  /* 光泽高光 */
+  .liquid-btn::before{
+    content:"";
+    position:absolute;
+    left:-30%;
+    top:-40%;
+    width:160%;
+    height:140%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02) 30%, transparent 55%);
+    transform: translateX(-20%) rotate(-18deg);
+    mix-blend-mode: overlay;
+    pointer-events:none;
+  }
+
+  .btn-label{
+    position:relative;
+    z-index:20;
+    font-weight:600;
+    letter-spacing:0.6px;
+    color: #eaf6ff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    font-size:16px;
+  }
+
+  /* 液滴容器及“黏合”滤镜 */
+  .blobs{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    filter: url(#goo);
+    pointer-events:none;
+  }
+
+  .blob{
+    position:absolute;
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.35) 20%, rgba(120,180,255,0.12));
+    mix-blend-mode: screen;
+    opacity:0.95;
+    transform: translate3d(0,0,0);
+    transition: transform .2s linear;
+  }
+
+  /* 不同 blob 的初始位置与动画（可微调） */
+  .b1 { left: -10px;  top: 6px;  animation: move1 4.6s ease-in-out infinite; }
+  .b2 { right: -4px;  top: 8px;  animation: move2 5.8s ease-in-out infinite; }
+  .b3 { left: 40px;   bottom: -10px; animation: move3 6.2s ease-in-out infinite; }
+  .b4 { right: 56px;  bottom: -16px; animation: move4 5.2s ease-in-out infinite; }
+
+  @keyframes move1 {
+    0% { transform: translate(0,0) scale(1); }
+    25% { transform: translate(30px,-8px) scale(1.05); }
+    50% { transform: translate(60px,4px) scale(0.95); }
+    75% { transform: translate(28px,14px) scale(1.02); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+  @keyframes move2 {
+    0% { transform: translate(0,0) scale(1); }
+    25% { transform: translate(-36px,10px) scale(1.06); }
+    50% { transform: translate(-72px,0px) scale(0.92); }
+    75% { transform: translate(-36px,-12px) scale(1.03); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+  @keyframes move3 {
+    0% { transform: translate(0,0) scale(1); }
+    25% { transform: translate(-18px,-6px) scale(1.04); }
+    50% { transform: translate(-40px,12px) scale(0.96); }
+    75% { transform: translate(-12px,20px) scale(1.02); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+  @keyframes move4 {
+    0% { transform: translate(0,0) scale(1); }
+    25% { transform: translate(22px,-10px) scale(1.05); }
+    50% { transform: translate(46px,8px) scale(0.94); }
+    75% { transform: translate(18px,18px) scale(1.01); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+
+  /* 点击/按下样式 */
+  .liquid-btn:active { transform: translateY(0) scale(.99); }
+  .liquid-btn:active .blob { animation-play-state: paused; transform: scale(.96); }
+
+  /* 小屏幕自适应 */
+  @media (max-width:420px){
+    .card{ width:92vw; padding:20px }
+    .liquid-btn{ --w: 92vw; height:56px; }
+    .blob{ width:56px;height:56px; }
+  }
+</style>
+</head>
+<body>
+  <!-- SVG 定义 goo 滤镜（必须保留在 DOM 中） -->
+  <svg style="position:absolute;width:0;height:0" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="goo">
+        <!-- 模糊使相邻 blob 黏在一起 -->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <!-- 拉高 alpha 使形态更“胶状” -->
+        <feColorMatrix in="blur" mode="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 20 -8" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="wrap">
+    <div class="card">
+      <h1>液态玻璃按钮测试</h1>
+      <p>这是一个空白页面（只包含一个液态玻璃按钮）——在不同浏览器中测试 backdrop-filter 与 SVG goo 效果。</p>
+
+      <button class="liquid-btn" id="liquidBtn" aria-label="液态玻璃按钮">
+        <div class="blobs" aria-hidden="true">
+          <span class="blob b1"></span>
+          <span class="blob b2"></span>
+          <span class="blob b3"></span>
+          <span class="blob b4"></span>
+        </div>
+        <span class="btn-label">液态玻璃</span>
+      </button>
+    </div>
+  </div>
+
+<script>
+  // 小交互：点击按钮时短暂闪光和轻微扩散
+  const btn = document.getElementById('liquidBtn');
+  btn.addEventListener('click', () => {
+    btn.style.transition = 'box-shadow .12s ease, transform .12s ease';
+    btn.style.boxShadow = '0 18px 44px rgba(8,16,40,0.8), 0 0 30px rgba(120,180,255,0.08)';
+    setTimeout(() => {
+      btn.style.boxShadow = '';
+    }, 220);
+  });
+
+  // 可选：根据容器尺寸微调 blob 大小与初始位置（使在不同宽度下更好看）
+  function adaptBlobs(){
+    const w = btn.clientWidth;
+    const blobs = document.querySelectorAll('.blob');
+    if (w < 220){
+      blobs.forEach(b => b.style.width = b.style.height = '56px');
+    } else {
+      blobs.forEach(b => b.style.width = b.style.height = '72px');
+    }
+  }
+  window.addEventListener('resize', adaptBlobs);
+  adaptBlobs();
+</script>
+</body>
+</html>
